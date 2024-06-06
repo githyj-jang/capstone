@@ -20,12 +20,15 @@ public class UserService {
         if (userRepository.findByNick(user.getNick()).isPresent()) {
             return false; // 닉네임이 이미 존재할 경우
         }
+        if (userRepository.findByUserId(user.getUserId()).isPresent()) {
+            return false; // id가 이미 존재할 경우
+        }
         userRepository.save(user);
         return true;
     }
 
-    public boolean loginUser(String nick, String pw) {
-        Optional<User> user = userRepository.findByNick(nick);
+    public boolean loginUser(String userId, String pw) {
+        Optional<User> user = userRepository.findByUserId(userId);
         return user.isPresent() && user.get().getPw().equals(pw);
     }
 

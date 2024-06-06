@@ -1,6 +1,10 @@
 package capstone.planto.domain;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
+
+
+@Entity
+@Table(name = "schedule")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +25,7 @@ public class Schedule {
 
     private String endRoute;
 
-    private Boolean palnFlag;
+    private Boolean planFlag;
 
 
 
@@ -72,12 +76,12 @@ public class Schedule {
         this.endRoute = endRoute;
     }
 
-    public Boolean getPalnFlag() {
-        return palnFlag;
+    public Boolean getPlanFlag() {
+        return planFlag;
     }
 
-    public void setPalnFlag(Boolean palnFlag) {
-        this.palnFlag = palnFlag;
+    public void setPlanFlag(Boolean planFlag) {
+        this.planFlag = planFlag;
     }
 
     public String getUserID() {

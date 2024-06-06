@@ -2,29 +2,31 @@ package capstone.planto.domain;
 
 import jakarta.persistence.*;
 
+
 @Entity
+@Table(name = "user")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String userId;
 
     private String pw;
 
     private String name;
 
-    @Column(unique = true)
+
     private String nick;
 
     public User(){
 
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPw() {
@@ -51,3 +53,4 @@ public class User {
         this.nick = nick;
     }
 }
+

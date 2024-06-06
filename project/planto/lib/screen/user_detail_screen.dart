@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../model/user_data.dart';
+
 class UserDetailScreen extends StatefulWidget {
   const UserDetailScreen({super.key});
 
@@ -61,7 +63,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                           color: Colors.blue,
                                           fontSize: 15),
                                     ),
-                                    Text('test@test.com'),
+                                    Text(currentUser),
                                   ],
                                 ),
                                 TextField(
@@ -80,7 +82,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                           color: Colors.blue,
                                           fontSize: 15),
                                     ),
-                                    Text('test'),
+                                    Text(currentNick),
                                   ],
                                 ),
                                 Row(

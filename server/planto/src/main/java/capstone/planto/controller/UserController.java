@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam String nick, @RequestParam String pw) {
-        boolean isLoggedIn = userService.loginUser(nick, pw);
-        return isLoggedIn ? "Login successful" : "Invalid nick or password";
+    public String loginUser(@RequestParam String userId, @RequestParam String pw) {
+        boolean isLoggedIn = userService.loginUser(userId, pw);
+        return isLoggedIn ? "Login successful" : "Invalid Id or password";
     }
 }

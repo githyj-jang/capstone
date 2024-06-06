@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.List;
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByNick(String nick);
+    Optional<User> findByUserId(String userId);
 
-    @Query("SELECT u FROM User u WHERE u.nick LIKE %:searchTerm% OR u.id LIKE %:searchTerm%")
+    @Query("SELECT u FROM User u WHERE u.nick LIKE %:searchTerm% OR u.userId LIKE %:searchTerm%")
     List<User> findByNickContainingOrIdContaining(@Param("searchTerm") String searchTerm);
 }

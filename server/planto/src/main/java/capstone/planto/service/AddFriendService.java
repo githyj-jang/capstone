@@ -2,6 +2,7 @@ package capstone.planto.service;
 
 import capstone.planto.domain.AddFriend;
 import capstone.planto.repository.AddFriendRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,11 @@ public class AddFriendService {
         addFriendRepository.save(addFriend);
         return true;
     }
-
+    @Transactional
     public void deleteFriend(String userId, String friendId) {
         addFriendRepository.deleteByUserIdAndFriendId(userId, friendId);
     }
-
+    
     public List<AddFriend> listFriends(String userId) {
         return addFriendRepository.findAllByUserId(userId);
     }

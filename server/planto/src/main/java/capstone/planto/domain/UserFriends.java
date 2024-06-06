@@ -2,7 +2,10 @@ package capstone.planto.domain;
 
 import jakarta.persistence.*;
 
+
+
 @Entity
+@Table(name = "user_friends")
 public class UserFriends {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

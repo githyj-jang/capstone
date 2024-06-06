@@ -7,7 +7,7 @@ import capstone.planto.service.UserFriendsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user-friends")
+@RequestMapping("/user-friends")
 public class UserFriendsController {
 
     private final UserFriendsService userFriendsService;
@@ -17,9 +17,15 @@ public class UserFriendsController {
         this.userFriendsService = userFriendsService;
     }
 
-    @GetMapping
+    @GetMapping("/getFriends")
     public List<UserFriends> getFriendsByUserId(@RequestParam String userId) {
         return userFriendsService.getFriendsByUserId(userId);
+    }
+
+    @PostMapping("/userFriends")
+    public String addUserFriend(@RequestBody UserFriends userFriend) {
+        boolean isAdded = userFriendsService.addUserFriend(userFriend);
+        return isAdded ? "User friend added successfully" : "User friend already exists";
     }
 }
 
