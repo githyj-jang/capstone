@@ -34,9 +34,12 @@ class _FriendScreenState extends State<FriendScreen> {
     'test4@test.com'
   ];
 
-  final List<Friend> friendData =  List.generate(nickname.length,
-          (index) => Friend('testNick',nickname[index],name[index],idList[index]));
-
+  final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
+    userId: 'uaer1',
+    friendNick: nickname[index],
+    friendName: name[index],
+    friendId: idList[index],
+  ));
   List<Friend> _displayedFriendData = [];
 
   // 여기에 검색 로직을 구현하세요.
@@ -158,7 +161,7 @@ class _FriendScreenState extends State<FriendScreen> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: (){
-              showPopup(context,_displayedFriendData[index].friendName,_displayedFriendData[index].friendNick,_displayedFriendData[index].friendID);
+              showPopup(context,_displayedFriendData[index].friendName,_displayedFriendData[index].friendNick,_displayedFriendData[index].friendId);
             },
             child: Card(
               child: ListTile(

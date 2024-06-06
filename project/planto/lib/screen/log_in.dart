@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planto/screen/main_screen.dart';
+import '../model/user_data.dart';
+import '../repository/user.dart';
 import './register_screen.dart';
 
 class LogIn extends StatefulWidget {
@@ -74,10 +76,24 @@ class _LogInState extends State<LogIn> {
                                     minWidth: 100.0,
                                     height: 50.0,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        if(controllerID.text == 'test@test.com' && controllerPW.text == '1234'){
+                                      onPressed: () async {
+
+                                        if((await fetchLogIn(controllerID.text,controllerPW.text))){
+                                          currentUser = controllerID.text;
+
+                                          Future<User> userDataFuture = searchOneUsers(controllerID.text);
+                                          currentNick = "testNick1";
+
+
+                                          userDataFuture.then((userData) {
+                                            currentNick = userData.nickName;
+                                            currentName = userData.nickName;
+                                          }).catchError((error) {
+                                            currentNick = "testNick1";
+                                            print('Error: $error');
+                                          });
                                           Navigator.push(context,
-                                              MaterialPageRoute(builder: (BuildContext context)=>MainScreen()));
+                                              MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
                                         }else {
                                           showSnackBar(context);
                                         }

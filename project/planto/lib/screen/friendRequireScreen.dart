@@ -34,9 +34,13 @@ class _FriendRequiredScreenState extends State<FriendRequiredScreen> {
     'testRequired4@test.com'
   ];
 
-  final List<Friend> friendData =  List.generate(nickname.length,
-          (index) => Friend('testNick',nickname[index],name[index],idList[index]));
 
+  final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
+    userId: 'user1',
+    friendNick: nickname[index],
+    friendName: name[index],
+    friendId: idList[index],
+  ));
   List<Friend> _displayedFriendData = [];
 
   // 여기에 검색 로직을 구현하세요.

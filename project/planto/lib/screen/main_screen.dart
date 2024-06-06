@@ -8,7 +8,13 @@ import 'package:planto/screen/travel_add_screen.dart';
 import 'package:planto/screen/travel_screen.dart';
 import 'package:planto/screen/user_detail_screen.dart';
 
+import '../model/user_data.dart';
+import '../repository/user.dart';
+
 class MainScreen extends StatefulWidget {
+
+  const MainScreen({Key? key}):super(key:key);
+
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -16,6 +22,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+
+
+
+
 
   static const List<Widget> _widgetOptions = <Widget>[
     CalendarScreen(),
@@ -37,6 +47,7 @@ class _MainScreenState extends State<MainScreen> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -47,8 +58,8 @@ class _MainScreenState extends State<MainScreen> {
                 backgroundImage: AssetImage('assets/img/defaultProfile.png'),
                 backgroundColor: Colors.white,
               ),
-              accountName: Text("testNick"),
-              accountEmail: Text("test@test.com"),
+              accountName: Text(currentNick),
+              accountEmail: Text(currentUser),
             ),
             ListTile(
               leading: Icon(

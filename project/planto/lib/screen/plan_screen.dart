@@ -65,8 +65,7 @@ class _PlanScreenState extends State<PlanScreen> {
   ];
 
   final List<Plan> planData =  List.generate(start.length,
-          (index) => Plan(start[index],end[index],startTime[index],endTime[index],eventName[index],eventLocationStart[index],eventLocationEnd[index]));
-
+          (index) => Plan(start:start[index],end : end[index],startTime:startTime[index],endTime: endTime[index],eventName: eventName[index],eventLocationStart: eventLocationStart[index],eventLocationEnd: eventLocationEnd[index], routeEnd: 'routeEnd', routeStart: 'routeStart', planFlag: ''));
   List<Plan> _displayedPlanData = [];
 
   // 여기에 검색 로직을 구현하세요.
