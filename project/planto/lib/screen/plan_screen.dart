@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:planto/common/dataTransfom.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/schedule_data.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
+import 'package:planto/repository/schedule_repository.dart';
 
 import '../model/plan_data.dart';
 import 'package:intl/intl.dart';
@@ -20,52 +26,53 @@ class PlanScreen extends StatefulWidget {
 class _PlanScreenState extends State<PlanScreen> {
 
 
-  static List<DateTime> start = [
-    DateTime.utc(2024, 5, 1),
-    DateTime.utc(2024, 5, 1),
-    DateTime.utc(2024, 5, 3),
-    DateTime.utc(2024, 5, 5),
-  ];
-  static List<DateTime> end = [
-    DateTime.utc(2024, 5, 1),
-    DateTime.utc(2024, 5, 1),
-    DateTime.utc(2024, 5, 3),
-    DateTime.utc(2024, 5, 5),
-  ];
-  static List<String> startTime = [
-    "22:00",
-    "10:00",
-    "16:00",
-    "13:00",
-  ];
-  static List<String> endTime = [
-    "24:00",
-    "12:00",
-    "20:00",
-    "15:00",
-  ];
+  // static List<DateTime> start = [
+  //   DateTime.utc(2024, 5, 1),
+  //   DateTime.utc(2024, 5, 1),
+  //   DateTime.utc(2024, 5, 3),
+  //   DateTime.utc(2024, 5, 5),
+  // ];
+  // static List<DateTime> end = [
+  //   DateTime.utc(2024, 5, 1),
+  //   DateTime.utc(2024, 5, 1),
+  //   DateTime.utc(2024, 5, 3),
+  //   DateTime.utc(2024, 5, 5),
+  // ];
+  // static List<String> startTime = [
+  //   "22:00",
+  //   "10:00",
+  //   "16:00",
+  //   "13:00",
+  // ];
+  // static List<String> endTime = [
+  //   "24:00",
+  //   "12:00",
+  //   "20:00",
+  //   "15:00",
+  // ];
 
-  static List<String> eventName = [
-    "프로젝트 회의",
-    "운동하기",
-    "밥 약속",
-    "독서",
-  ];
-  static List<String> eventLocationStart = [
-    "온라인",
-    "서울과학기술대학교 불암학사",
-    "서울과학기술대학교 불암학사",
-    "서울과학기술대학교 불암학사",
-  ];
-  static List<String> eventLocationEnd = [
-    "온라인",
-    "3PM 복싱 앤 휘트니스",
-    "버거투버거, since 2011",
-    "서울과학기술대학교 불암학사",
-  ];
+  // static List<String> eventName = [
+  //   "프로젝트 회의",
+  //   "운동하기",
+  //   "밥 약속",
+  //   "독서",
+  // ];
+  // static List<String> eventLocationStart = [
+  //   "온라인",
+  //   "서울과학기술대학교 불암학사",
+  //   "서울과학기술대학교 불암학사",
+  //   "서울과학기술대학교 불암학사",
+  // ];
+  // static List<String> eventLocationEnd = [
+  //   "온라인",
+  //   "3PM 복싱 앤 휘트니스",
+  //   "버거투버거, since 2011",
+  //   "서울과학기술대학교 불암학사",
+  // ];
 
-  final List<Plan> planData =  List.generate(start.length,
-          (index) => Plan(start:start[index],end : end[index],startTime:startTime[index],endTime: endTime[index],eventName: eventName[index],eventLocationStart: eventLocationStart[index],eventLocationEnd: eventLocationEnd[index], routeEnd: 'routeEnd', routeStart: 'routeStart', planFlag: ''));
+  
+
+  List<Plan> planData = [];
   List<Plan> _displayedPlanData = [];
 
   // 여기에 검색 로직을 구현하세요.
@@ -83,10 +90,24 @@ class _PlanScreenState extends State<PlanScreen> {
     setState(() {});
   }
 
+  ScheduleRepository scheduleRepository = ScheduleRepository();
+  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+  _prepareEvents() async{
+    List<Schedule> data = await scheduleRepository.getSchedulesByUserIDAndPlanFlag(currentUser, true);
+    List<Itiinerary> itineraries = await itiineraryRepository.getItiinerariesByUserID(currentUser);
+    planData = createPlans(data, itineraries);
+    print(planData.length);
+
+  }
+
   @override
   void initState() {
     super.initState();
-    _displayedPlanData = List.from(planData);
+    _prepareEvents().then((_) {
+      setState(() {
+        _displayedPlanData = List.from(planData);
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {

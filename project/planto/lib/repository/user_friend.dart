@@ -1,26 +1,27 @@
 import 'package:http/http.dart' as http;
+import 'package:planto/model/user_data.dart';
 import 'dart:convert';
 
 import '../model/friend_data.dart';
 
-Future<List<Friend>> getFriendsByUserId(String userId) async {
+Future<List<User>> getFriendsByUserId(String userId) async {
   final response = await http.get(Uri.parse('http://10.0.2.2:8080/user-friends/getFriends?userId=$userId'));
-
   if (response.statusCode == 200) {
-    List<dynamic> body = jsonDecode(response.body);
-    List<Friend> friends = body.map((dynamic item) => Friend.fromJson(item)).toList();
-    return friends;
+    List<dynamic> usersJson = jsonDecode(response.body);
+    return usersJson.map((json) => User.fromJson(json)).toList();
   } else {
-    throw Exception('Failed to load friends');
+    throw Exception('Failed to load users');
   }
 }
 
 Future<String> addUserFriend(Friend userFriend) async {
+  
   final response = await http.post(
     Uri.parse('http://10.0.2.2:8080/user-friends/userFriends'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
+    
     body: jsonEncode(<String, String>{
       'userId': userFriend.userId,
       'friendName': userFriend.friendName,

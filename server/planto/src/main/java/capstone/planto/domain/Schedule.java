@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
+    private String title;
 
     private String userID;
     private LocalDateTime startTime;
@@ -17,71 +19,26 @@ public class Schedule {
 
     private String  explanation;
 
-    private String startPlace;
-
-    private String endPlace;
-
-    private String startRoute;
-
-    private String endRoute;
-
-    private Boolean planFlag;
-
-
+    private Boolean planFlag; // true면 계획, false면 일정
 
     public Schedule(){
 
     }
 
-    public Long getId() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-
-
-
-    public String getStartPlace() {
-        return startPlace;
-    }
-
-    public void setStartPlace(String startPlace) {
-        this.startPlace = startPlace;
-    }
-
-    public String getEndPlace() {
-        return endPlace;
-    }
-
-    public void setEndPlace(String endPlace) {
-        this.endPlace = endPlace;
-    }
-
-    public String getStartRoute() {
-        return startRoute;
-    }
-
-    public void setStartRoute(String startRoute) {
-        this.startRoute = startRoute;
-    }
-
-    public String getEndRoute() {
-        return endRoute;
-    }
-
-    public void setEndRoute(String endRoute) {
-        this.endRoute = endRoute;
-    }
-
-    public Boolean getPlanFlag() {
-        return planFlag;
-    }
-
-    public void setPlanFlag(Boolean planFlag) {
-        this.planFlag = planFlag;
     }
 
     public String getUserID() {
@@ -92,6 +49,13 @@ public class Schedule {
         this.userID = userID;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
     public LocalDateTime getEndTime() {
         return endTime;
@@ -101,19 +65,19 @@ public class Schedule {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
     public String getExplanation() {
         return explanation;
     }
 
     public void setExplanation(String explanation) {
         this.explanation = explanation;
+    }
+
+    public Boolean getPlanFlag() {
+        return planFlag;
+    }
+
+    public void setPlanFlag(Boolean planFlag) {
+        this.planFlag = planFlag;
     }
 }

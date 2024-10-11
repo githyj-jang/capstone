@@ -22,7 +22,6 @@ public class AddFriend {
 
     }
 
-
     public String getFriendId() {
         return friendId;
     }

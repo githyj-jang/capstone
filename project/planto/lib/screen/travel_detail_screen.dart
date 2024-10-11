@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/plan_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
 import '../model/travel_data.dart';
 
 class TravelDetailScreen extends StatefulWidget {
   const TravelDetailScreen({Key? key, required this.travel}):super(key:key);
 
-  final Travel travel;
+  final Plan travel;
 
   @override
   State<TravelDetailScreen> createState() => _TravelDetailScreenState();
 }
 
 class _TravelDetailScreenState extends State<TravelDetailScreen> {
+  List<Itiinerary> _displayedItineraryData = [];
+
+  
+  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+  _loadItinerary() async {
+    
+    List<Itiinerary> itineraries = await itiineraryRepository.getItiinerariesByScheduleID(widget.travel.scheduleId);
+    setState(() {
+      _displayedItineraryData = itineraries;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadItinerary();
+  }
+
+  
   String formatDateTime(DateTime dateTime) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(dateTime);
@@ -21,6 +43,17 @@ class _TravelDetailScreenState extends State<TravelDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.travel.eventName),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              setState(()  {
+                _displayedItineraryData =  optimizeRoute(_displayedItineraryData);
+              });
+
+            },
+          ),
+        ],
       ),
       body: Center(
         child: SizedBox(
@@ -119,16 +152,11 @@ class _TravelDetailScreenState extends State<TravelDetailScreen> {
                           fontWeight: FontWeight.bold, // 글자 굵기를 굵게(bold) 설정
                         ),
                       ),
-                      Text(widget.travel.eventLocationStart,
-                        style: TextStyle(
-                          fontSize: 20.0, // 글자 크기를 24로 설정
-                        ),
-                      ),
-                      if (widget.travel.eventLocationStart != widget.travel.eventLocationEnd)
-                        Text(widget.travel.eventLocationEnd,
-                          style: TextStyle(
-                            fontSize: 20.0, // 글자 크기를 24로 설정
-                          ),
+                      Column(
+                            children:
+                              _displayedItineraryData.map((location) => Text(location.place, style:
+                                TextStyle(fontSize:
+                                20.0))).toList(),
                         ),
                     ],
 

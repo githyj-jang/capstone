@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:planto/dto/schedule_response.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/schedule_data.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
+import 'package:planto/repository/schedule_repository.dart';
 
 class TravelAddScreen extends StatefulWidget {
   const TravelAddScreen({super.key});
@@ -19,6 +25,10 @@ class _TravelAddScreenState extends State<TravelAddScreen> {
 
   TimeOfDay _startTime = TimeOfDay.now();
   TimeOfDay _endTime = TimeOfDay.now();
+  
+  get startDateTime => null;
+  
+  get endDateTime => null;
 
   @override
   void dispose() {
@@ -77,7 +87,78 @@ class _TravelAddScreenState extends State<TravelAddScreen> {
         appBar: AppBar(title: const Text('일정 추가'),
           actions: [
             IconButton(onPressed: _addStopOverPlace, icon: Icon(Icons.add_circle_outline)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.save))
+            IconButton(onPressed: (){
+              void _savePlan() async {
+                if (_formKey.currentState?.validate() ?? false) {
+                  DateTime startDateTime = DateFormat('yyyy-MM-dd').parse(_startDateController.text);
+                  startDateTime = DateTime(
+                    startDateTime.year,
+                    startDateTime.month,
+                    startDateTime.day,
+                    _startTime.hour,
+                    _startTime.minute,
+                  );
+
+                  // 종료 날짜와 시간 결합
+                  DateTime endDateTime = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
+                  endDateTime = DateTime(
+                    endDateTime.year,
+                    endDateTime.month,
+                    endDateTime.day,
+                    _endTime.hour,
+                    _endTime.minute,
+                  );
+                  Schedule plan = new Schedule(
+                    id: 0,
+                    userId: currentUser,
+                    title: _planNameController.text,
+                    startTime: startDateTime,
+                    endTime: endDateTime,
+                    planFlag : false,
+                    // 'startPlace': _startPlaceController.text,
+                    // 'stopOverPlaces': _stopOverPlacesControllers.map((controller) => controller.text).toList(),
+                    // 'endPlace': _endPlaceController.text,
+                  );
+                  ScheduleRepository scheduleRepository = ScheduleRepository();
+                  Schedule_Response schedule_response = await scheduleRepository.addSchedule(plan);
+                  Itiinerary startRoute = new Itiinerary(
+                    scheduleId: schedule_response.id,
+                    place: _startPlaceController.text,
+                    placeInfo: _startPlaceController.text,// todo 수정 필요
+                    route: 1,
+                    startTime: startDateTime,
+                  );
+                  
+                  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+                  itiineraryRepository.addItiinerary(startRoute);
+                  int queqe_route = 2;
+                  _stopOverPlacesControllers.map((controller) => controller.text).toList().forEach((stopOverPlace) {
+                    Itiinerary stopOverRoute = new Itiinerary(
+                      scheduleId: schedule_response.id,
+                      place: stopOverPlace,
+                      placeInfo: stopOverPlace,
+                      route: queqe_route,
+                      startTime: startDateTime,
+                    );
+                    queqe_route++;
+                    itiineraryRepository.addItiinerary(stopOverRoute);
+                  });
+                  Itiinerary endRoute = new Itiinerary(
+                    scheduleId: schedule_response.id,
+                    place: _endPlaceController.text,
+                    placeInfo: _endPlaceController.text,
+                    route: queqe_route,
+                    startTime: endDateTime,
+                  );
+                  itiineraryRepository.addItiinerary(endRoute);
+                  
+
+                  // For now, just print the plan. You can replace this with your desired action.
+                }
+              }
+
+              _savePlan();
+            }, icon: Icon(Icons.save))
           ],),
         body: SingleChildScrollView(
           child: Column(
@@ -143,4 +224,8 @@ class _TravelAddScreenState extends State<TravelAddScreen> {
       ),
     );
   }
+}
+
+extension on Future<Schedule_Response> {
+  get id => null;
 }

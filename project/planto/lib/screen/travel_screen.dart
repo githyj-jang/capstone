@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:planto/common/dataTransfom.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/plan_data.dart';
+import 'package:planto/model/schedule_data.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
+import 'package:planto/repository/schedule_repository.dart';
 import 'package:planto/screen/travel_detail_screen.dart';
 
-import '../model/travel_data.dart';
 import 'package:intl/intl.dart';
 
 String formatDateTime(DateTime dateTime) {
@@ -17,48 +23,46 @@ class TravelScreen extends StatefulWidget {
 
 class _TravelScreenState extends State<TravelScreen> {
 
-  static List<DateTime> start = [
-    DateTime.utc(2024, 5, 10),
-    DateTime.utc(2024, 5, 20),
-    DateTime.utc(2024, 5, 23),
-  ];
-  static List<DateTime> end = [
-    DateTime.utc(2024, 5, 11),
-    DateTime.utc(2024, 5, 21),
-    DateTime.utc(2024, 5, 28),
-  ];
-  static List<String> startTime = [
-    "07:00",
-    "07:00",
-    "14:00",
-  ];
-  static List<String> endTime = [
-    "24:00",
-    "10:00",
-    "24:00",
-  ];
+  // static List<DateTime> start = [
+  //   DateTime.utc(2024, 5, 10),
+  //   DateTime.utc(2024, 5, 20),
+  //   DateTime.utc(2024, 5, 23),
+  // ];
+  // static List<DateTime> end = [
+  //   DateTime.utc(2024, 5, 11),
+  //   DateTime.utc(2024, 5, 21),
+  //   DateTime.utc(2024, 5, 28),
+  // ];
+  // static List<String> startTime = [
+  //   "07:00",
+  //   "07:00",
+  //   "14:00",
+  // ];
+  // static List<String> endTime = [
+  //   "24:00",
+  //   "10:00",
+  //   "24:00",
+  // ];
 
-  static List<String> eventName = [
-    "제주도 여행",
-    "울릉도 여행",
-    "강원도 여행",
-  ];
-  static List<String> eventLocationStart = [
-    "이스턴호텔제주",
-    "아라호텔",
-    "휴원경펜션",
-  ];
-  static List<String> eventLocationEnd = [
-    "협재해수욕장",
-    "내수전 일출전망대",
-    "발왕산 관광케이블카",
-  ];
+  // static List<String> eventName = [
+  //   "제주도 여행",
+  //   "울릉도 여행",
+  //   "강원도 여행",
+  // ];
+  // static List<String> eventLocationStart = [
+  //   "이스턴호텔제주",
+  //   "아라호텔",
+  //   "휴원경펜션",
+  // ];
+  // static List<String> eventLocationEnd = [
+  //   "협재해수욕장",
+  //   "내수전 일출전망대",
+  //   "발왕산 관광케이블카",
+  // ];
 
-  final List<Travel> planData =  List.generate(start.length,
-          (index) => Travel(start[index],end[index],startTime[index],endTime[index],eventName[index],eventLocationStart[index],eventLocationEnd[index]));
-
-  List<Travel> _displayedPlanData = [];
-
+   List<Plan> planData = [];
+  List<Plan> _displayedPlanData = [];
+  
   // 여기에 검색 로직을 구현하세요.
   void _performSearch(String query) {
     if (query.isEmpty) {
@@ -74,10 +78,24 @@ class _TravelScreenState extends State<TravelScreen> {
     setState(() {});
   }
 
+  ScheduleRepository scheduleRepository = ScheduleRepository();
+  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+  _prepareEvents() async{
+    List<Schedule> data = await scheduleRepository.getSchedulesByUserIDAndPlanFlag(currentUser, false);
+    List<Itiinerary> itineraries = await itiineraryRepository.getItiinerariesByUserID(currentUser);
+    planData = createPlans(data, itineraries);
+    print(planData.length);
+
+  }
+
   @override
   void initState() {
     super.initState();
-    _displayedPlanData = List.from(planData);
+    _prepareEvents().then((_) {
+      setState(() {
+        _displayedPlanData = List.from(planData);
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
