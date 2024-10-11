@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planto/repository/user.dart';
 
 import '../model/user_data.dart';
 
@@ -58,21 +59,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                        'ID:',
+                                        '아이디:',
                                       style: TextStyle(
                                           color: Colors.blue,
                                           fontSize: 15),
                                     ),
                                     Text(currentUser),
                                   ],
-                                ),
-                                TextField(
-                                  controller: controllerPW,
-                                  decoration: InputDecoration(
-                                      labelText: 'Password'
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  obscureText: true,
                                 ),
                                 Row(
                                   children: [
@@ -96,24 +89,42 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     Text('testNick'),
                                   ],
                                 ),
-                                SizedBox(height: 40.0,),
-                                ButtonTheme(
-                                    minWidth: 100.0,
-                                    height: 50.0,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if(controllerPW.text.isEmpty){
-                                          showSnackBarE(context);
-                                        }
-                                        else if(controllerPW.text.length <3){
-                                          showSnackBarPW(context);
-                                        }else {
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      child: Text('확인'),
-                                    )
+                                TextField(
+                                  controller: controllerPW,
+                                  decoration: InputDecoration(
+                                    labelText: 'Password'
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  obscureText: true,
                                 ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                  if (controllerPW.text.isEmpty) {
+                                    showSnackBarE(context);
+                                  } else if (controllerPW.text.length < 3) {
+                                    showSnackBarPW(context);
+                                  } else {
+                                    bool success = await changePassword(currentUser, controllerPW.text);
+                                    if (success) {
+                                    Navigator.pop(context);
+                                    } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                      content: Text(
+                                        '비밀번호 변경 실패',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      duration: const Duration(seconds: 2),
+                                      backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    }
+                                  }
+                                  },
+                                  child: Text('비밀번호 변경'),
+                                ),
+                                SizedBox(height: 40.0,),
+                                
 
                               ],
                             ),

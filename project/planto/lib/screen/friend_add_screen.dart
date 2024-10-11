@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:planto/model/add_friend.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/add_friend.dart';
+import 'package:planto/repository/user.dart';
+import 'package:planto/repository/user_friend.dart';
 import 'package:planto/screen/friendRequireScreen.dart';
+
 import '../model/friend_data.dart';
 
 class FriendAddScreen extends StatefulWidget {
@@ -12,50 +18,107 @@ class FriendAddScreen extends StatefulWidget {
 class _FriendAddScreenState extends State<FriendAddScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  List<Friend> friendData = [];
 
-  static List<String> nickname = [
-    'testAddNick1',
-    'testAddNick2',
-    'testAddNick3',
-    'testAddNick4'
-  ];
+  AddFriendRepository addFriendRepository = AddFriendRepository();
+  
+  _loadFriends() async {
+    List<User> friends = await searchUsers("");
+    List<User> real_friends = await getFriendsByUserId(currentUser);
+    List<AddFriend> friends_add_request =  await addFriendRepository.listFriendsFromMe(currentUser);
+    List<User> friendsToAdd = friends_add_request.map((request) {
+    return User(
+      userId: request.friendId,
+      pw: "",
+      name: request.friendName,
+      nickName: request.friendNick,
+      );
+    }).toList();
 
-  static List<String> name = [
-    'testAdd1',
-    'testAdd2',
-    'testAdd3',
-    'testAdd4'
-  ];
-  static List<String> idList = [
-    'testAdd1@test.com',
-    'testAdd2@test.com',
-    'testAdd3@test.com',
-    'testAdd4@test.com'
-  ];
+    List<AddFriend> friends_request = await addFriendRepository.listFriendsToMe(currentUser);
 
-  final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
-    userId: 'user1',
-    friendNick: nickname[index],
-    friendName: name[index],
-    friendId: idList[index],
-  ));
+    List<User> friendsFromAdd = friends_request.map((request) {
+    return User(
+      userId: request.friendId,
+      pw: "",
+      name: request.friendName,
+      nickName: request.friendNick,
+      );
+    }).toList();
+
+    friends.removeWhere((user) => real_friends.any((friend) => friend.userId == user.userId) || user.userId == currentUser || friendsToAdd.any((friend) => friend.userId == user.userId) || friendsFromAdd.any((friend) => friend.userId == user.userId));
+
+    setState(() {
+      friendData = friends.map((user) => Friend(
+        userId: user.userId,
+        friendNick: user.nickName,
+        friendName: user.name,
+        friendId: user.userId,
+      )).toList();
+    });
+
+  }
+
+  // static List<String> nickname = [
+  //   'testAddNick1',
+  //   'testAddNick2',
+  //   'testAddNick3',
+  //   'testAddNick4'
+  // ];
+
+  // static List<String> name = [
+  //   'testAdd1',
+  //   'testAdd2',
+  //   'testAdd3',
+  //   'testAdd4'
+  // ];
+  // static List<String> idList = [
+  //   'testAdd1@test.com',
+  //   'testAdd2@test.com',
+  //   'testAdd3@test.com',
+  //   'testAdd4@test.com'
+  // ];
+
+  // final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
+  //   userId: 'user1',
+  //   friendNick: nickname[index],
+  //   friendName: name[index],
+  //   friendId: idList[index],
+  // ));
 
   List<Friend> _displayedFriendData = [];
 
-  // 여기에 검색 로직을 구현하세요.
+  // void _performSearch(String query) async{
+
+  //   List<Friend> friendsData = await _loadFriends(query);
+  //   if (query.isEmpty) {
+  //     _displayedFriendData = List.empty();
+  //   } else {
+  //     _displayedFriendData = friendsData
+  //         .where((friend) =>
+  //     friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
+  //         friend.friendName.toLowerCase().contains(query.toLowerCase()))
+  //         .toList();
+  //   }
+
+  //   setState(() {});
+  // }
+
   void _performSearch(String query) {
     if (query.isEmpty) {
-      _displayedFriendData = List.empty();
+      _displayedFriendData = List.from(friendData);
     } else {
       _displayedFriendData = friendData
           .where((friend) =>
-      friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
-          friend.friendName.toLowerCase().contains(query.toLowerCase()))
+          friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
+          friend.friendName.toLowerCase().contains(query.toLowerCase()) ||
+          friend.friendId.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
 
     setState(() {});
   }
+
   Widget _buildSearchField() {
     return TextField(
       controller: _searchController,
@@ -72,7 +135,11 @@ class _FriendAddScreenState extends State<FriendAddScreen> {
   @override
   void initState() {
     super.initState();
-    _displayedFriendData = List.empty();
+    _loadFriends().then((_) {
+      setState(() {
+        _displayedFriendData = List.from(friendData);
+      });
+    });
   }
 
   @override
@@ -109,7 +176,17 @@ class _FriendAddScreenState extends State<FriendAddScreen> {
               ),
               trailing: IconButton(
                 icon: Icon(Icons.add_circle_outline),
-                onPressed: () {  },
+                onPressed: () {
+                  Friend friend = Friend(
+                      userId: currentUser,
+                      friendId: _displayedFriendData[index].friendId,
+                      friendName: _displayedFriendData[index].friendName,
+                      friendNick: _displayedFriendData[index].friendNick,
+                  ); // Add friend
+                  _addFriend(friend);
+                  _loadFriends();
+                  setState(() {});
+                },
               ),
             ),
           );
@@ -125,6 +202,16 @@ class _FriendAddScreenState extends State<FriendAddScreen> {
       ),
     );
   }
+  void _addFriend(Friend addFriend) async {
+    
+    bool a = await addFriendRepository.addFriend(addFriend);
+    if (a) {
+      print("Friend added successfully");
+    } else {
+      print("Failed to add friend");
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();

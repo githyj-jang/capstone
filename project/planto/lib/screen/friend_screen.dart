@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/user_friend.dart';
 import '../model/friend_data.dart';
 import './friend_add_screen.dart';
 
@@ -14,34 +16,37 @@ class _FriendScreenState extends State<FriendScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
-  static List<String> nickname = [
-    'testNick1',
-    'testNick2',
-    'testNick3',
-    'testNick4'
-  ];
 
-  static List<String> name = [
-    'test1',
-    'test2',
-    'test3',
-    'test4'
-  ];
-  static List<String> idList = [
-    'test1@test.com',
-    'test2@test.com',
-    'test3@test.com',
-    'test4@test.com'
-  ];
+  List<Friend> friendData = [];
+  
 
-  final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
-    userId: 'uaer1',
-    friendNick: nickname[index],
-    friendName: name[index],
-    friendId: idList[index],
-  ));
+  _loadFriends() async {
+    List<User> friends = await getFriendsByUserId(currentUser);
+    setState(() {
+      friendData = friends.map((user) => Friend(
+        userId: user.userId,
+        friendNick: user.nickName,
+        friendName: user.name,
+        friendId: user.userId,
+      )).toList();
+    });
+  }
+
   List<Friend> _displayedFriendData = [];
 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFriends().then((_) {
+      setState(() {
+        _displayedFriendData = List.from(friendData);
+      });
+    });
+  
+    
+  }
+  
   // 여기에 검색 로직을 구현하세요.
   void _performSearch(String query) {
     if (query.isEmpty) {
@@ -129,11 +134,7 @@ class _FriendScreenState extends State<FriendScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _displayedFriendData = List.from(friendData);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +184,7 @@ class _FriendScreenState extends State<FriendScreen> {
         onPressed: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (BuildContext context)=>FriendAddScreen()));
+          
         },
         tooltip: 'add Friends',
         child: const Icon(Icons.add),

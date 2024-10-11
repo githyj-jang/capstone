@@ -20,9 +20,11 @@ class Friend{
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
+    
     'friendName': friendName,
     'friendNick': friendNick,
     'friendId': friendId,
+    
   };
 
 }

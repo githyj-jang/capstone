@@ -12,8 +12,6 @@ public class UserFriends {
     private Long id;
 
     private String userId;
-    private String friendName;
-    private String friendNick;
     private String friendId;
 
     // 기본 생성자
@@ -29,22 +27,6 @@ public class UserFriends {
         this.id = id;
     }
 
-    public String getFriendNick() {
-        return friendNick;
-    }
-
-    public void setFriendNick(String friendNick) {
-        this.friendNick = friendNick;
-    }
-
-    public String getFriendId() {
-        return friendId;
-    }
-
-    public void setFriendId(String friendId) {
-        this.friendId = friendId;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -53,11 +35,11 @@ public class UserFriends {
         this.userId = userId;
     }
 
-    public String getFriendName() {
-        return friendName;
+    public String getFriendId() {
+        return friendId;
     }
 
-    public void setFriendName(String friendName) {
-        this.friendName = friendName;
+    public void setFriendId(String friendId) {
+        this.friendId = friendId;
     }
 }

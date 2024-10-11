@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:planto/model/add_friend.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/add_friend.dart';
+import 'package:planto/repository/user_friend.dart';
 
 import '../model/friend_data.dart';
 
@@ -13,34 +17,22 @@ class FriendRequiredScreen extends StatefulWidget {
 class _FriendRequiredScreenState extends State<FriendRequiredScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  AddFriendRepository addFriendRepository = AddFriendRepository();
 
-  static List<String> nickname = [
-    'testRequiredNick1',
-    'testRequiredNick2',
-    'testRequiredNick3',
-    'testRequiredNick4'
-  ];
+  List<Friend> friendData = [];
 
-  static List<String> name = [
-    'testRequired1',
-    'testRequired2',
-    'testRequired3',
-    'testRequired4'
-  ];
-  static List<String> idList = [
-    'testRequired1@test.com',
-    'testRequired2@test.com',
-    'testRequired3@test.com',
-    'testRequired4@test.com'
-  ];
-
-
-  final List<Friend> friendData = List.generate(nickname.length, (index) => Friend(
-    userId: 'user1',
-    friendNick: nickname[index],
-    friendName: name[index],
-    friendId: idList[index],
-  ));
+  _loadFriends() async {
+    List<AddFriend> friends = await addFriendRepository.listFriendsToMe(currentUser);
+    
+    setState(() {
+      friendData = friends.map((user) => Friend(
+        userId: currentUser,
+        friendNick: user.friendNick,
+        friendName: user.friendName,
+        friendId: user.friendId,
+      )).toList();
+    });
+  }
   List<Friend> _displayedFriendData = [];
 
   // 여기에 검색 로직을 구현하세요.
@@ -50,9 +42,14 @@ class _FriendRequiredScreenState extends State<FriendRequiredScreen> {
     } else {
       _displayedFriendData = friendData
           .where((friend) =>
-      friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
-          friend.friendName.toLowerCase().contains(query.toLowerCase()))
+          friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
+          friend.friendName.toLowerCase().contains(query.toLowerCase()) ||
+          friend.friendId.toLowerCase().contains(query.toLowerCase()))
           .toList();
+          // .where((friend) =>
+          // friend.friendNick.toLowerCase().contains(query.toLowerCase()) ||
+          //     friend.friendName.toLowerCase().contains(query.toLowerCase()))
+          // .toList();
     }
 
     setState(() {});
@@ -75,7 +72,11 @@ class _FriendRequiredScreenState extends State<FriendRequiredScreen> {
   @override
   void initState() {
     super.initState();
-    _displayedFriendData = List.from(friendData);
+    _loadFriends().then((_) {
+      setState(() {
+        _displayedFriendData = List.from(friendData);
+      });
+    });
   }
 
   @override
@@ -115,7 +116,23 @@ class _FriendRequiredScreenState extends State<FriendRequiredScreen> {
               ),
               trailing: IconButton(
                 icon: Icon(Icons.add_task),
-                onPressed: () {  },
+                onPressed: ()  {
+
+
+                  String dfa = friendData[index].userId;
+                  print("$dfa");
+                  addUserFriend(Friend(
+                  userId: currentUser,
+                  friendId: _displayedFriendData[index].friendId,
+                  friendNick: _displayedFriendData[index].friendNick,
+                  friendName: _displayedFriendData[index].friendName,
+                 
+                  ));
+                  _loadFriends();
+                  setState(() {});
+                  
+                  
+                },
               ),
             ),
           );

@@ -25,8 +25,22 @@ public class AddFriendService {
     public void deleteFriend(String userId, String friendId) {
         addFriendRepository.deleteByUserIdAndFriendId(userId, friendId);
     }
-    
+    public void friendDelete(String userId, String friendId) {
+        addFriendRepository.deleteByUserIdAndFriendId(friendId, userId);
+    }
+
     public List<AddFriend> listFriends(String userId) {
+        return addFriendRepository.findAllByFriendId(userId);
+    }
+
+    public List<AddFriend> Friendslist(String userId) {
         return addFriendRepository.findAllByUserId(userId);
     }
+
+    public List<AddFriend> listFriendsByFriendId(String friendId) {
+        return addFriendRepository.findAllByFriendId(friendId);
+    }
+
+
+
 }

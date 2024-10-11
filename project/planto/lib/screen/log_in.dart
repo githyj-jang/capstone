@@ -81,13 +81,15 @@ class _LogInState extends State<LogIn> {
                                         if((await fetchLogIn(controllerID.text,controllerPW.text))){
                                           currentUser = controllerID.text;
 
-                                          Future<User> userDataFuture = searchOneUsers(controllerID.text);
-                                          currentNick = "testNick1";
+                                          Future<User?> userDataFuture = getUserById(controllerID.text);
 
+                                          User? userData = await userDataFuture;
+                                          currentNick = userData?.nickName ?? "defaultNick";
+                                          currentName = userData?.nickName ?? "defaultName";
 
                                           userDataFuture.then((userData) {
-                                            currentNick = userData.nickName;
-                                            currentName = userData.nickName;
+                                            currentNick = userData?.nickName ?? "defaultNick";
+                                            currentName = userData?.nickName ?? "defaultName";
                                           }).catchError((error) {
                                             currentNick = "testNick1";
                                             print('Error: $error');

@@ -83,7 +83,7 @@ class _MapScreenState extends State<MapScreen> {
   ];
 
   final List<Plan> planData =  List.generate(start.length,
-          (index) => Plan(start:start[index],end : end[index],startTime:startTime[index],endTime: endTime[index],eventName: eventName[index],eventLocationStart: eventLocationStart[index],eventLocationEnd: eventLocationEnd[index], routeEnd: 'routeEnd', routeStart: 'routeStart', planFlag: ''));
+          (index) => Plan(scheduleId: index,start:start[index],end : end[index],startTime:startTime[index],endTime: endTime[index],eventName: eventName[index],eventLocationStart: eventLocationStart[index],eventLocationEnd: eventLocationEnd[index], routeEnd: 'routeEnd', routeStart: 'routeStart', planFlag: false));
 
   final List<MapData> mapData =  List.generate(mapLocationStart.length,
           (index) => MapData(mapLocationStart[index],mapLocationEnd[index]));

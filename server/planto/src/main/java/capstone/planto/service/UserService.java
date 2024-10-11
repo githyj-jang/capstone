@@ -37,4 +37,18 @@ public class UserService {
     public List<User> getUsersBySearchTerm(String searchTerm) {
         return userRepository.findByNickContainingOrIdContaining(searchTerm);
     }
+
+    public Optional<User> getUserById(String userId) {
+        return userRepository.findByUserId(userId);
+    }
+
+    public boolean changePassword(String userId, String pw) {
+        Optional<User> user = userRepository.findByUserId(userId);
+        if (user.isPresent()) {
+            user.get().setPw(pw);
+            userRepository.save(user.get());
+            return true;
+        }
+        return false;
+    }
 }

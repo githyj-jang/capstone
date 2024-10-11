@@ -19,7 +19,7 @@ class ApiService {
           'endPlace': plan.eventLocationEnd,
           'startRoute': plan.routeStart,
           'endRoute': plan.routeEnd,
-          'planFlag': plan.planFlag,
+          'planFlag': plan.planFlag?'True':'False',
         }),
     );
 

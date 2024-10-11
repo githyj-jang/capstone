@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:planto/dto/schedule_response.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/schedule_data.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
+import 'package:planto/repository/schedule_repository.dart';
 
 class PlanAddScreen extends StatefulWidget {
   const PlanAddScreen({Key? key}) : super(key: key);
@@ -78,7 +84,99 @@ class _PlanAddScreenState extends State<PlanAddScreen> {
           appBar: AppBar(title: const Text('일정 추가'),
             actions: [
               IconButton(onPressed: _addStopOverPlace, icon: Icon(Icons.add_circle_outline)),
-              IconButton(onPressed: (){}, icon: Icon(Icons.save))
+              IconButton(onPressed: (){
+              void _savePlan() async{
+                if (_formKey.currentState?.validate() ?? false) {
+                  DateTime startDateTime = DateFormat('yyyy-MM-dd').parse(_startDateController.text);
+                  startDateTime = DateTime(
+                    startDateTime.year,
+                    startDateTime.month,
+                    startDateTime.day,
+                    _startTime.hour,
+                    _startTime.minute,
+                  );
+
+                  // 종료 날짜와 시간 결합
+                  DateTime endDateTime = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
+                  endDateTime = DateTime(
+                    endDateTime.year,
+                    endDateTime.month,
+                    endDateTime.day,
+                    _endTime.hour,
+                    _endTime.minute,
+                  );
+                  Schedule plan = new Schedule(
+                    id: 0,
+                    userId: currentUser,
+                    title: _planNameController.text,
+                    startTime: startDateTime,
+                    endTime: endDateTime,
+                    planFlag : true,
+                    // 'startPlace': _startPlaceController.text,
+                    // 'stopOverPlaces': _stopOverPlacesControllers.map((controller) => controller.text).toList(),
+                    // 'endPlace': _endPlaceController.text,
+                  );
+
+                  
+                  ScheduleRepository scheduleRepository = ScheduleRepository();
+                  Schedule_Response schedule_response = await scheduleRepository.addSchedule(plan);
+                  int schedule_ids = schedule_response.id;
+                  Itiinerary startRoute = new Itiinerary(
+                    place: _startPlaceController.text,
+                    scheduleId: schedule_ids,
+                    route: 1,
+                    placeInfo: _startPlaceController.text, // todo 수정해야함
+                    startTime: startDateTime,
+                  );
+                  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+                  itiineraryRepository.addItiinerary(startRoute);
+                  int queqe_route = 2;
+                  _stopOverPlacesControllers.map((controller) => controller.text).toList().forEach((stopOverPlace) {
+                    Itiinerary stopOverRoute = new Itiinerary(
+                      scheduleId: schedule_ids,
+                      place: stopOverPlace,
+                      placeInfo: stopOverPlace, // todo 수정해야함
+                      route: queqe_route,
+                      startTime: startDateTime,// todo 수정해야함
+                    );
+                    queqe_route++;
+                    itiineraryRepository.addItiinerary(stopOverRoute);
+                  });
+                  Itiinerary endRoute = new Itiinerary(
+                    scheduleId: schedule_ids,
+                    place: _endPlaceController.text,
+                    route: queqe_route,
+                    placeInfo: _endPlaceController.text, // todo 수정해야함
+                    startTime: endDateTime,
+                  );
+                  itiineraryRepository.addItiinerary(endRoute);
+                  // Itiinerary startRoute = new Itiinerary(
+                  //   scheduleId: schedule_response.id,
+                  //   place: _startPlaceController.text,
+                  //   route: 0,
+                  // );
+                  // int queqe_route = 1;
+                  // _stopOverPlacesControllers.map((controller) => controller.text).toList().forEach((stopOverPlace) {
+                  //   Itiinerary stopOverRoute = new Itiinerary(
+                  //     scheduleId: schedule_response.id,
+                  //     place: stopOverPlace,
+                  //     route: queqe_route,
+                  //   );
+                  //   queqe_route++;
+                  // });
+                  // Itiinerary endRoute = new Itiinerary(
+                  //   scheduleId: schedule_response.id,
+                  //   place: _endPlaceController.text,
+                  //   route: queqe_route,
+                  // );
+                  
+
+                  // For now, just print the plan. You can replace this with your desired action.
+                }
+              }
+
+              _savePlan();
+              }, icon: Icon(Icons.save))
             ],
           
           ),
@@ -148,4 +246,8 @@ class _PlanAddScreenState extends State<PlanAddScreen> {
       ),
     );
   }
+}
+
+extension on Future<Schedule_Response> {
+  get id => null;
 }

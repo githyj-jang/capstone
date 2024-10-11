@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:planto/common/dataTransfom.dart';
+import 'package:planto/model/itiinerary_data.dart';
+import 'package:planto/model/user_data.dart';
+import 'package:planto/repository/itiinerary_repository.dart';
 
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:planto/model/schedule_data.dart';
+import 'package:planto/repository/schedule_repository.dart';
 
 
 
@@ -21,25 +26,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Map<DateTime, List<String>> _preparedEvents = {};
   Map<DateTime, Color> _eventColors = {};
 
+  ScheduleRepository scheduleRepository = ScheduleRepository();
+  ItiineraryRepository itiineraryRepository = ItiineraryRepository();
+
+  
+
+
+
   @override
   void initState() {
     super.initState();
     _prepareEvents();
   }
 
-  void _prepareEvents() {
-    Map<List<DateTime>, List<String>> events = {
-      [DateTime.utc(2024, 5, 1), DateTime.utc(2024, 5, 1)]: ['22:00  24:00  프로젝트 회의  온라인', '10:00  12:00  운동하기  집 ~ 헬스장'],
-      [DateTime.utc(2024, 5, 3), DateTime.utc(2024, 5, 3)]: ['16:00  20:00  밥 약속  집 ~ 식당'],
-      [DateTime.utc(2024, 5, 5), DateTime.utc(2024, 5, 5)]: ['13:00  15:00  독서  집'],
-      [DateTime.utc(2024, 5, 10), DateTime.utc(2024, 5, 11)]: ['07:00  24:00  제주도 여행  이스턴호텔제주 ~ 협재해수욕장'],
-      [DateTime.utc(2024, 5, 20), DateTime.utc(2024, 5, 21)]: ['07:00  10:00  울릉도 여행  아라호텔 ~ 내수전 일출전망대'],
-      [DateTime.utc(2024, 5, 23), DateTime.utc(2024, 5, 28)]: ['14:00  24:00  강원도 여행  휴원경펜션 ~ 발왕산 관광케이블카'],
-    };
+  void _prepareEvents() async{
+
+    List<Schedule> data = await scheduleRepository.getSchedulesByUserID(currentUser);
+    List<Itiinerary> itineraries = await itiineraryRepository.getItiinerariesByUserID(currentUser);
+    Map<List<DateTime>, List<String>> events = transformSchedules(data, itineraries);
+    
 
     _preparedEvents = {};
     _eventColors = {};
-
+  
 
 
     events.forEach((dates, events) {

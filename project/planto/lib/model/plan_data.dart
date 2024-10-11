@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Plan{
+  final int scheduleId;
   final DateTime start;
   final DateTime end;
   final String startTime;
@@ -10,9 +11,9 @@ class Plan{
   final String eventLocationEnd;
   final String routeStart;
   final String routeEnd;
-  final String planFlag;
+  final bool planFlag;
 
-  Plan({required this.start,required this.end,required this.startTime,required this.endTime,required this.eventName,required this.eventLocationStart,required this.eventLocationEnd, required this.routeEnd, required this.routeStart,required this.planFlag});
+  Plan({required this.scheduleId,required this.start,required this.end,required this.startTime,required this.endTime,required this.eventName,required this.eventLocationStart,required this.eventLocationEnd, required this.routeEnd, required this.routeStart,required this.planFlag});
   factory Plan.fromJson(Map<String, dynamic> json) {
 
     DateTime tempStartDate = DateTime.parse(json['startTime']);
@@ -21,6 +22,7 @@ class Plan{
     String tempStartTime = "${tempStartDate.hour.toString().padLeft(2, '0')}:${tempStartDate.minute.toString().padLeft(2, '0')}";
     String tempEndTime = "${tempEndDate.hour.toString().padLeft(2, '0')}:${tempEndDate.minute.toString().padLeft(2, '0')}";
     return Plan(
+      scheduleId: json['scheduleId'],
       start: tempStartDate,
       end: tempEndDate,
       startTime: tempStartTime,
