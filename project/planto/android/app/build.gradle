@@ -22,6 +22,8 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def googleMapApiKey = localProperties.getProperty('google.map.key')
+
 android {
     namespace "com.example.planto"
     compileSdkVersion flutter.compileSdkVersion
@@ -49,6 +51,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders["googleMapApiKey"] = googleMapApiKey
     }
 
     buildTypes {

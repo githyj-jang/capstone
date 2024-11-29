@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planto/screen/main_screen.dart';
+import 'package:planto/screen/test_screen.dart';
+import 'package:planto/screen/travel_add_screen.dart';
 import 'screen/log_in.dart';
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: 'assets/config/.env');
 
-void main() {
+
   runApp(const MyApp());
 }
 
@@ -23,10 +29,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: LogIn(),
-      // home: const LogIn(),
+      // home: LogIn(),
     );
   }
 }
-
-
 

@@ -108,9 +108,13 @@ List<Plan> createPlans(List<Schedule> schedules, List<Itiinerary> itineraries) {
       }
       
     }
+    int inputId = 1;
+    if (schedule.id != null){
+      inputId = schedule.id!;
+    }
 
     return Plan(
-      scheduleId: schedule.id,
+      scheduleId: inputId,
       start: schedule.startTime,
       end: schedule.endTime,
       startTime: startTime,

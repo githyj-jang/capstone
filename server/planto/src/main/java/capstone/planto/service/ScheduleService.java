@@ -19,6 +19,12 @@ public class ScheduleService {
     }
 
     public Schedule addSchedule(Schedule schedule) {
+        if (schedule.getStartTime().isAfter(schedule.getEndTime())) {
+            throw new IllegalArgumentException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
+        }
+        if(schedule.getExplanation() == null) {
+            schedule.setExplanation(schedule.getTitle())    ;
+        }
         return scheduleRepository.save(schedule);
     }
 
