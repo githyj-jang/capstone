@@ -63,7 +63,6 @@ class _TravelScreenState extends State<TravelScreen> {
    List<Plan> planData = [];
   List<Plan> _displayedPlanData = [];
   
-  // 여기에 검색 로직을 구현하세요.
   void _performSearch(String query) {
     if (query.isEmpty) {
       _displayedPlanData = List.from(planData);

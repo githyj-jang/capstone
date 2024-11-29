@@ -7,6 +7,7 @@ class Itiinerary {
   final String placeInfo;
   final int route;
   final DateTime startTime;
+  final String? description;
 
   Itiinerary({
     this.id,
@@ -15,6 +16,7 @@ class Itiinerary {
     required this.placeInfo,
     required this.route,
     required this.startTime,
+    this.description = '',
   });
 
   factory Itiinerary.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class Itiinerary {
       placeInfo: json['placeInfo'],
       route: json['route'],
       startTime: DateTime.parse(json['startTime']),
+      description: json['description'],
     );
   }
 
@@ -36,6 +39,7 @@ class Itiinerary {
       'placeInfo': placeInfo,
       'route': route,
       'startTime': startTime.toIso8601String(),
+      'description': description,
     };
   }
 }
@@ -115,6 +119,7 @@ List<Itiinerary> optimizeRoute(List<Itiinerary> itineraries) {
         placeInfo: orderedItineraries[i].placeInfo,
         route: i + 1, // Update route to reflect new order
         startTime: orderedItineraries[i].startTime,
+        description: orderedItineraries[i].description,
       );
     }
 

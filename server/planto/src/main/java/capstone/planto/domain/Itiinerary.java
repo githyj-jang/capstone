@@ -22,8 +22,12 @@ public class Itiinerary {
     // 같은 스케쥴 내에서의 순서
     private Integer route;
 
+    private String description;
+
     // 예상시간
     private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     public String getPlaceInfo() {
 
@@ -76,5 +80,21 @@ public class Itiinerary {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

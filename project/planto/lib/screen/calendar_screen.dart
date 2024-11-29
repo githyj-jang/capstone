@@ -36,7 +36,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void initState() {
     super.initState();
-    _prepareEvents();
+    setState(() {
+      _prepareEvents();
+    });
+    
   }
 
   void _prepareEvents() async{
@@ -66,7 +69,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       }
     });
   }
-  void showPopup(context, start, end, startTime, endTime, eventName, eventSite) {
+  void showPopup(context, start, end, startTime, endTime, eventName, eventSite,description) {
     showDialog(
       context: context,
       builder: (context) {
@@ -81,6 +84,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 Text("시작 시간: $startTime"),
                 Text("종료 시간: $endTime"),
                 Text("장소: $eventSite"),
+                if (description.isNotEmpty) Text("설명: $description"), // description 표시
+                
               ],
             ),
           ),
@@ -160,9 +165,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
               String end = eventDetails[1];
               String eventName = eventDetails[2];
               String eventSite = eventDetails.length > 3 ? eventDetails[3] : ''; // 장소 정보가 없는 경우를 대비해 기본값 설정
+              String description = eventDetails.length > 4 ? eventDetails[4] : ''; // 설명 정보가 없는 경우를 대비해 기본값 설정
 
               // 추출한 정보를 showPopup 함수에 전달
-              showPopup(context, _selectedDay, _selectedDay, start, end, eventName, eventSite);
+              showPopup(context, _selectedDay, _selectedDay, start, end, eventName, eventSite, description);
             },
             child: Card(
               child: ListTile(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:planto/screen/calendar_screen.dart';
 import 'package:planto/screen/friend_screen.dart';
+import 'package:planto/screen/itinerary_screen.dart';
 import 'package:planto/screen/map_screen.dart';
-import 'package:planto/screen/plan_add_screen.dart';
-import 'package:planto/screen/plan_screen.dart';
 import 'package:planto/screen/travel_add_screen.dart';
 import 'package:planto/screen/travel_screen.dart';
 import 'package:planto/screen/user_detail_screen.dart';
@@ -27,18 +26,18 @@ class _MainScreenState extends State<MainScreen> {
 
 
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     CalendarScreen(),
-    PlanScreen(),
+    // PlanScreen(),
     TravelScreen(),
-    MapScreen(),
+    ItineraryScreen(),
   ];
 
   static const List<Widget> _addWidgetOptions = <Widget>[
-    PlanAddScreen(),
-    PlanAddScreen(),
+    // PlanAddScreen(),
     TravelAddScreen(),
-    PlanAddScreen()
+    TravelAddScreen(),
+    TravelAddScreen()
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -111,17 +110,17 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.calendar_month),
             label: '달력',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: '일정',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.list),
+          //   label: '일정',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.card_travel),
             label: '여행',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
-            label: '지도',
+            label: '추천',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -129,7 +128,7 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
-      floatingActionButton: (_selectedIndex == 1 || _selectedIndex == 2)
+      floatingActionButton: (_selectedIndex == 1)
           ? FloatingActionButton(
         onPressed: () {
           Navigator.push(context,

@@ -22,8 +22,6 @@ public class ItiineraryService {
         return itiineraryRepository.findById(id);
     }
 
-
-
     public Itiinerary updateItiinerary(Itiinerary itiinerary) {
         return itiineraryRepository.save(itiinerary);
     }

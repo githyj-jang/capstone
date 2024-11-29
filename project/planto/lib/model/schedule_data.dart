@@ -1,5 +1,5 @@
 class Schedule {
-  final int id;
+  final int? id;
   final String userId;
   final String title;
   final DateTime startTime;
@@ -7,7 +7,7 @@ class Schedule {
   final bool planFlag;
 
   Schedule({
-    required this.id,
+    this.id,
     required this.userId,
     required this.title,
     required this.startTime,
